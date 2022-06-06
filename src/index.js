@@ -17,5 +17,5 @@ ReactDOM.render(
       </BrowserRouter>
     </ThemeProvider>
   </Provider>,
-  document.getElementById('root')
+  document.getElementById('root'),
 );
