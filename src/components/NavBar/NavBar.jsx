@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
   AppBar,
   IconButton,
@@ -14,19 +14,50 @@ import {
   Brightness4,
   Brightness7,
 } from '@mui/icons-material';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 
+import { ColorModeContext } from '../../utils/ToggleColorMode';
 import { Sidebar, Search } from '../';
 import useStyles from './styles';
+import { fetchToken, moviesApi, createSessionId } from '../../utils/index';
+import { setUser, userSelector } from '../../features/auth';
 
 const NavBar = () => {
+  const { isAuthenticated, user } = useSelector(userSelector);
+
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const classes = useStyles();
   const isMobile = useMediaQuery('(max-width: 600px)');
   const theme = useTheme();
-  const isAuthenticated = true;
+
+  const dispatch = useDispatch();
+  const colorMode = useContext(ColorModeContext);
+
+  const token = localStorage.getItem('request_token');
+  const sessionIdFromLocalStorage = localStorage.getItem('session_id');
+
+  useEffect(() => {
+    const logInUser = async () => {
+      if (token) {
+        if (sessionIdFromLocalStorage) {
+          const { data: userData } = await moviesApi.get(
+            `/account?session_id=${sessionIdFromLocalStorage}`
+          );
+          dispatch(setUser(userData));
+        } else {
+          const sessionId = await createSessionId();
+          const { data: userData } = await moviesApi.get(
+            `/account?session_id=${sessionId}`
+          );
+          dispatch(setUser(userData));
+        }
+      }
+    };
+    logInUser();
+  }, [token]);
 
   return (
     <>
@@ -42,13 +73,16 @@ const NavBar = () => {
               <Menu />
             </IconButton>
           )}
-          <IconButton color='inherit' sx={{ ml: 1 }} onClick={() => {}}>
+          <IconButton
+            color='inherit'
+            sx={{ ml: 1 }}
+            onClick={colorMode.toggleColorMode}>
             {theme.palette.mode === 'dark' ? <Brightness7 /> : <Brightness4 />}
           </IconButton>
           {!isMobile && <Search />}
           <div>
             {!isAuthenticated ? (
-              <Button color='inherit' onClick={() => {}}>
+              <Button color='inherit' onClick={fetchToken}>
                 {' '}
                 Login &nbsp; <AccountCircle />{' '}
               </Button>
@@ -56,7 +90,7 @@ const NavBar = () => {
               <Button
                 color='inherit'
                 component={Link}
-                to={`/profile/:id`}
+                to={`/profile/${user.id}`}
                 className={classes.linkButton}
                 onClick={() => {}}>
                 {!isMobile && <>My movies &nbsp; </>}
