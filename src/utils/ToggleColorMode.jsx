@@ -1,10 +1,11 @@
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { createContext, useMemo, useState } from 'react';
+/* eslint-disable implicit-arrow-linebreak */
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { createContext, useMemo, useState } from "react";
 
 export const ColorModeContext = createContext();
 
 const ToggleColorMode = ({ children }) => {
-  const [mode, setMode] = useState('light');
+  const [mode, setMode] = useState("light");
   const theme = useMemo(
     () =>
       createTheme({
@@ -12,10 +13,10 @@ const ToggleColorMode = ({ children }) => {
           mode,
         },
       }),
-    [mode]
+    [mode],
   );
   const toggleColorMode = () => {
-    setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+    setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
   };
   return (
     <ColorModeContext.Provider value={{ mode, setMode, toggleColorMode }}>

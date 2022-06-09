@@ -1,15 +1,15 @@
-import { useState } from 'react';
-import { Box, Button, CircularProgress, Grid, Typography } from '@mui/material';
-import { useHistory, useParams } from 'react-router-dom';
-import { ArrowBack } from '@mui/icons-material';
+import { Box, Button, CircularProgress, Grid, Typography } from "@mui/material";
+import { useHistory, useParams } from "react-router-dom";
+import { ArrowBack } from "@mui/icons-material";
+import { useState } from "react";
 
-import useStyles from './styles';
+import useStyles from "./styles";
 import {
   useGetActorsDetailsQuery,
   useGetMoviesByActorIdQuery,
-} from '../../services/TMDB';
+} from "../../services/TMDB";
 
-import { MovieList, Pagination } from '../';
+import { MovieList, Pagination } from "..";
 
 const Actors = () => {
   const history = useHistory();
@@ -20,19 +20,19 @@ const Actors = () => {
   const classes = useStyles();
   if (isFetching) {
     return (
-      <Box display='flex' justifyContent='center'>
-        <CircularProgress size='8rem' />
+      <Box display="flex" justifyContent="center">
+        <CircularProgress size="8rem" />
       </Box>
     );
   }
   if (error) {
     return (
-      <Box display='flex' justifyContent='center' alignItems='center'>
+      <Box display="flex" justifyContent="center" alignItems="center">
         <Button
           startIcon={<ArrowBack />}
           onClick={() => history.goBack()}
-          color='primary'>
-          {' '}
+          color="primary"
+        >
           Go Back
         </Button>
       </Box>
@@ -53,38 +53,41 @@ const Actors = () => {
           lg={7}
           xl={8}
           style={{
-            display: 'flex',
-            justifyContent: 'center ',
-            flexDirection: 'column',
-          }}>
-          <Typography variant='h2' gutterBottom>
+            display: "flex",
+            justifyContent: "center ",
+            flexDirection: "column",
+          }}
+        >
+          <Typography variant="h2" gutterBottom>
             {data?.name}
           </Typography>
-          <Typography variant='h5' gutterBottom>
+          <Typography variant="h5" gutterBottom>
             Born: {new Date(data?.birthday).toDateString()}
           </Typography>
-          <Typography variant='body1' gutterBottom align='justify' paragraph>
-            {data?.biography || 'No biography available'}
+          <Typography variant="body1" gutterBottom align="justify" paragraph>
+            {data?.biography || "No biography available"}
           </Typography>
-          <Box marginTop='2rem' display='flex' justifyContent='space-around'>
+          <Box marginTop="2rem" display="flex" justifyContent="space-around">
             <Button
-              variant='contained'
-              color='primary'
-              target='_blank'
-              href={`https://www.imdb.com/name/${data?.imdb_id}`}>
+              variant="contained"
+              color="primary"
+              target="_blank"
+              href={`https://www.imdb.com/name/${data?.imdb_id}`}
+            >
               IMDB
             </Button>
             <Button
               startIcon={<ArrowBack />}
               onClick={() => history.goBack()}
-              color='primary'>
+              color="primary"
+            >
               Back
             </Button>
           </Box>
         </Grid>
       </Grid>
-      <Box margin='2rem 0'>
-        <Typography variant='h2 ' gutterBottom align='center'>
+      <Box margin="2rem 0">
+        <Typography variant="h2 " gutterBottom align="center">
           {movies && <MovieList movies={movies} numberOfMovies={12} />}
         </Typography>
         <Pagination

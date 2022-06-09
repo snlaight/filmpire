@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from "react";
 import {
   AppBar,
   IconButton,
@@ -7,22 +7,22 @@ import {
   Button,
   Avatar,
   useMediaQuery,
-} from '@mui/material';
+} from "@mui/material";
 import {
   Menu,
   AccountCircle,
   Brightness4,
   Brightness7,
-} from '@mui/icons-material';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { useTheme } from '@mui/material/styles';
+} from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { useTheme } from "@mui/material/styles";
 
-import { ColorModeContext } from '../../utils/ToggleColorMode';
-import { Sidebar, Search } from '../';
-import useStyles from './styles';
-import { fetchToken, moviesApi, createSessionId } from '../../utils/index';
-import { setUser, userSelector } from '../../features/auth';
+import { ColorModeContext } from "../../utils/ToggleColorMode";
+import { Sidebar, Search } from "..";
+import useStyles from "./styles";
+import { fetchToken, moviesApi, createSessionId } from "../../utils/index";
+import { setUser, userSelector } from "../../features/auth";
 
 const NavBar = () => {
   const { isAuthenticated, user } = useSelector(userSelector);
@@ -30,27 +30,27 @@ const NavBar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const classes = useStyles();
-  const isMobile = useMediaQuery('(max-width: 600px)');
+  const isMobile = useMediaQuery("(max-width: 600px)");
   const theme = useTheme();
 
   const dispatch = useDispatch();
   const colorMode = useContext(ColorModeContext);
 
-  const token = localStorage.getItem('request_token');
-  const sessionIdFromLocalStorage = localStorage.getItem('session_id');
+  const token = localStorage.getItem("request_token");
+  const sessionIdFromLocalStorage = localStorage.getItem("session_id");
 
   useEffect(() => {
     const logInUser = async () => {
       if (token) {
         if (sessionIdFromLocalStorage) {
           const { data: userData } = await moviesApi.get(
-            `/account?session_id=${sessionIdFromLocalStorage}`
+            `/account?session_id=${sessionIdFromLocalStorage}`,
           );
           dispatch(setUser(userData));
         } else {
           const sessionId = await createSessionId();
           const { data: userData } = await moviesApi.get(
-            `/account?session_id=${sessionId}`
+            `/account?session_id=${sessionId}`,
           );
           dispatch(setUser(userData));
         }
@@ -61,42 +61,45 @@ const NavBar = () => {
 
   return (
     <>
-      <AppBar position='fixed'>
+      <AppBar position="fixed">
         <Toolbar className={classes.toolbar}>
           {isMobile && (
             <IconButton
-              color='inherit'
-              edge='start'
-              style={{ outline: 'none' }}
+              color="inherit"
+              edge="start"
+              style={{ outline: "none" }}
               onClick={() => setMobileOpen((prevMobileOpen) => !prevMobileOpen)}
-              className={classes.menuButton}>
+              className={classes.menuButton}
+            >
               <Menu />
             </IconButton>
           )}
           <IconButton
-            color='inherit'
+            color="inherit"
             sx={{ ml: 1 }}
-            onClick={colorMode.toggleColorMode}>
-            {theme.palette.mode === 'dark' ? <Brightness7 /> : <Brightness4 />}
+            onClick={colorMode.toggleColorMode}
+          >
+            {theme.palette.mode === "dark" ? <Brightness7 /> : <Brightness4 />}
           </IconButton>
           {!isMobile && <Search />}
           <div>
             {!isAuthenticated ? (
-              <Button color='inherit' onClick={fetchToken}>
-                {' '}
-                Login &nbsp; <AccountCircle />{' '}
+              <Button color="inherit" onClick={fetchToken}>
+                {" "}
+                Login &nbsp; <AccountCircle />{" "}
               </Button>
             ) : (
               <Button
-                color='inherit'
+                color="inherit"
                 component={Link}
                 to={`/profile/${user.id}`}
                 className={classes.linkButton}
-                onClick={() => {}}>
+                onClick={() => {}}
+              >
                 {!isMobile && <>My movies &nbsp; </>}
                 <Avatar
                   style={{ width: 30, height: 30 }}
-                  alt='profile'
+                  alt="profile"
                   src={`https://www.gravatar.com/avatar/${user?.avatar?.gravatar?.hash}.jpg?s=300`}
                 />
               </Button>
@@ -109,19 +112,21 @@ const NavBar = () => {
         <nav className={classes.drawer}>
           {isMobile ? (
             <Drawer
-              variant='temporary'
-              anchor='right'
+              variant="temporary"
+              anchor="right"
               open={mobileOpen}
               onClose={() => setMobileOpen((prevMobileOpen) => !prevMobileOpen)}
               classes={{ paper: classes.drawerPaper }}
-              ModalProps={{ keepMounted: true }}>
+              ModalProps={{ keepMounted: true }}
+            >
               <Sidebar setMobileOpen={setMobileOpen} />
             </Drawer>
           ) : (
             <Drawer
               classes={{ paper: classes.drawerPaper }}
-              variant='permanent'
-              open>
+              variant="permanent"
+              open
+            >
               <Sidebar setMobileOpen={setMobileOpen} />
             </Drawer>
           )}
